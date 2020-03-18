@@ -23,7 +23,7 @@ jobs:
             for platform in hi35{20dv300,21av100,21dv100,31av100,36c,36dv100}
             do
               echo "=== Building platform $platform ==="
-              docker build . -t "trassir/conan-$platform" --build-arg "profile_name=$platform"
+              docker build arm -t "trassir/conan-$platform" --build-arg "profile_name=$platform"
             done
       - name: Upload docker images
         run: WIP
