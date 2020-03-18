@@ -7,4 +7,4 @@ compiler=gcc
 compiler.version=4.8
 
 [build_requires]
-toolchain-hi3520dv300/0.1@dssl/testing
+toolchain-hi3520dv300/0.1@trassir/testing

@@ -5,6 +5,8 @@ FROM ubuntu:eoan
 ENV PYENV_ROOT=/opt/pyenv \
     PATH=/opt/pyenv/shims:${PATH}
 
+RUN dpkg --add-architecture i386
+    
 RUN apt-get -qq update \
     && apt-get -qq install -y --no-install-recommends \
         sudo \
@@ -36,6 +38,7 @@ RUN apt-get -qq install -y libbz2-dev libreadline-dev  ninja-build
 RUN apt-get -qq install -y libssl-dev
 RUN apt-get -qq install -y libffi-dev
 RUN apt-get -qq install -y libsqlite3-dev
+RUN apt-get -qq install -y zlib1g:i386 # for the arm-gcc/arm-as itself
 
 
 RUN wget --no-check-certificate --quiet -O /tmp/pyenv-installer https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer \
@@ -64,3 +67,4 @@ RUN mkdir -p /home/conan/.conan/profiles \
 
 ARG profile_name
 COPY profiles/${profile_name}.txt /home/conan/.conan/profiles/default
+
