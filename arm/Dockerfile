@@ -12,7 +12,19 @@ RUN apt-get -qq update \
         sudo \
         git \
         curl \
-        wget
+        wget \
+        ca-certificates \
+        g++-9-multilib \
+        make \
+        zlib1g-dev \
+        libbz2-dev \
+        libreadline-dev \
+        ninja-build \
+        libssl-dev \
+        libffi-dev \
+        libsqlite3-dev \
+        zlib1g:i386 
+# zlib1g:i386 is needed to run arm-gnueabi-as itself
 
 RUN groupadd 1001 -g 1001 \
     && useradd -ms /bin/bash conan -g 1001 \
@@ -29,16 +41,6 @@ RUN wget --no-check-certificate --quiet https://cmake.org/files/v3.16/cmake-3.16
     && rm -rf cmake-3.16.4-Linux-x86_64 \
     && rm cmake-3.16.4-Linux-x86_64.tar.gz
 
-#TMP MOVE TO FIRST INSTALL
-RUN apt-get -qq install -y ca-certificates 
-RUN apt-get -qq install -y g++-9-multilib
-RUN apt-get -qq install -y make
-RUN apt-get -qq install -y zlib1g-dev
-RUN apt-get -qq install -y libbz2-dev libreadline-dev  ninja-build
-RUN apt-get -qq install -y libssl-dev
-RUN apt-get -qq install -y libffi-dev
-RUN apt-get -qq install -y libsqlite3-dev
-RUN apt-get -qq install -y zlib1g:i386 # for the arm-gcc/arm-as itself
 
 
 RUN wget --no-check-certificate --quiet -O /tmp/pyenv-installer https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer \
@@ -65,6 +67,7 @@ RUN mkdir -p /home/conan/.conan/profiles \
     && printf 'eval "$(pyenv init -)"\n' >> ~/.bashrc \
     && printf 'eval "$(pyenv virtualenv-init -)"\n' >> ~/.bashrc
 
+# TODO: remove profile_name, use conan config install
 ARG profile_name
-COPY profiles/${profile_name}.txt /home/conan/.conan/profiles/default
+COPY profiles/${profile_name}.txt /home/conan/.conan/profiles/${profile_name}
 
