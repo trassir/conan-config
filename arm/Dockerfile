@@ -5,10 +5,11 @@ FROM ubuntu:eoan
 ENV PYENV_ROOT=/opt/pyenv \
     PATH=/opt/pyenv/shims:${PATH}
 
-RUN dpkg --add-architecture i386
-    
-RUN apt-get -qq update \
-    && apt-get -qq install -y --no-install-recommends \
+RUN dpkg --add-architecture i386 \
+    && apt-get -qq update \
+    && apt-get -qq install -y apt-utils
+
+RUN apt-get -qq install -y --no-install-recommends \
         sudo \
         git \
         curl \
