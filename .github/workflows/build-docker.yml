@@ -1,13 +1,9 @@
 name: Build ARM Docker images
 
 on:
-  pull_request:
-    paths:
-      - 'arm/**'
-      - '.github/workflows/build-docker.yml'
   push:
     branches:
-      - docker # todo: master
+      - docker  # todo: master
     paths:
       - 'arm/**'
       - '.github/workflows/build-docker.yml'
@@ -18,12 +14,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Docker login
+        run: |
+          docker login -p ${{secrets.DOCKER_PASSWORD}} -u ${{secrets.DOCKER_USERNAME}}
       - name: Build docker images
         run: |
-            for platform in hi35{20dv300,21av100,21dv100,31av100,36c,36dv100}
+            for platform in hi35{20dv300} #,21av100,21dv100,31av100,36c,36dv100}
             do
               echo "=== Building platform $platform ==="
-              docker build arm -t "trassir/conan-$platform" --build-arg "profile_name=$platform"
+              TAG="trassiross/conan-$platform"
+              docker build arm -t $TAG --build-arg "profile_name=$platform"
+              docker upload $TAG
             done
-      - name: Upload docker images
-        run: WIP
