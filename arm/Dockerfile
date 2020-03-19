@@ -65,6 +65,6 @@ RUN mkdir -p /home/conan/.conan/profiles \
     && printf 'eval "$(pyenv init -)"\n' >> ~/.bashrc \
     && printf 'eval "$(pyenv virtualenv-init -)"\n' >> ~/.bashrc
 
-ARG profile_name
-COPY profiles/${profile_name}.txt /home/conan/.conan/profiles/default
+# TODO: conan config install
+COPY profiles/hi3520dv300 /home/conan/.conan/profiles/hi3520dv300
 
