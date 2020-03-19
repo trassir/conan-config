@@ -17,12 +17,8 @@ jobs:
       - name: Docker login
         run: |
           docker login -p ${{secrets.DOCKER_PASSWORD}} -u ${{secrets.DOCKER_USERNAME}}
-      - name: Build docker images
+      - name: Build docker image
         run: |
-            for platform in hi3520dv300 #,21av100,21dv100,31av100,36c,36dv100}
-            do
-              echo "=== Building platform $platform ==="
-              TAG="trassiross/conan-$platform"
-              docker build arm -t $TAG --build-arg "profile_name=$platform"
-              docker upload $TAG
-            done
+          TAG="trassiross/conan-arm"
+          docker build arm -t $TAG --build-arg "profile_name=hi3520dv300"
+          docker push $TAG
