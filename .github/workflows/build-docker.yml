@@ -19,7 +19,7 @@ jobs:
           docker login -p ${{secrets.DOCKER_PASSWORD}} -u ${{secrets.DOCKER_USERNAME}}
       - name: Build docker images
         run: |
-            for platform in hi35{20dv300} #,21av100,21dv100,31av100,36c,36dv100}
+            for platform in hi3520dv300 #,21av100,21dv100,31av100,36c,36dv100}
             do
               echo "=== Building platform $platform ==="
               TAG="trassiross/conan-$platform"
