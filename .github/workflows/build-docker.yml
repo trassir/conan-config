@@ -19,7 +19,6 @@ jobs:
           docker login -p ${{secrets.DOCKER_PASSWORD}} -u ${{secrets.DOCKER_USERNAME}}
       - name: Build docker image
         run: |
-          docker build arm -t "trassiross/conan-arm" --build-arg "profile_name=hi3520dv300"
-      - name: Upload docker image
-        run: |
-          docker push "trassiross/conan-arm"
+          TAG="trassiross/conan-arm"
+          docker build arm -t $TAG --build-arg "profile_name=hi3520dv300"
+          docker push $TAG
