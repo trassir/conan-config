@@ -8,7 +8,7 @@ import tarfile
 #from conans.client.conan_api import Conan
 #from conans.client.command import Command
 
-def profile_path(value):
+def platform_path(value):
     value = value.rstrip('/')
     if not os.path.isdir(value):
         raise argparse.ArgumentTypeError(f"'{value}' is not an existing directory")
@@ -19,23 +19,23 @@ def profile_path(value):
     subdir = os.path.join(value, triplet)
     if not os.path.isdir(os.path.join(subdir, 'bin')):
         raise argparse.ArgumentTypeError("No 'bin' subdirectory in '{subdir}'")
-    profile = os.path.basename(value)
-    return subdir, profile
+    platform = os.path.basename(value)
+    return subdir, platform
 
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--profile_path', required=True, type=profile_path)
+    parser.add_argument('--platform_path', required=True, type=platform_path)
     parser.add_argument('--username', required=True)
     parser.add_argument('--channel', required=True)
     return parser.parse_args()
 
 def main():
     args = parse_args()
-    tree, profile = args.profile_path
-    toolchain = f"toolchain-{profile}"
+    tree, platform = args.platform_path
+    toolchain = f"toolchain-{platform}"
     tar_gz = f"{toolchain}.tar.gz"
-    print(f"Using: {tree}, {profile}")
+    print(f"Using: {tree}, {platform}")
     if not os.path.isfile(tar_gz):
         print("Copying tree...")
         shutil.copytree(tree, toolchain)
@@ -45,7 +45,7 @@ def main():
     else:
         print(f"Archive {tar_gz} exists, skipping compression")
 
-    conanfile = f"./conanfile_{profile}.py"
+    conanfile = f"./conanfile_{platform}.py"
     reference = f"{args.username}/{args.channel}"
     print(f"Running conan create {conanfile} {reference}")
     subprocess.call(["conan", "create", conanfile, reference])
