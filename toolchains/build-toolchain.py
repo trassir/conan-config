@@ -5,9 +5,6 @@ import shutil
 import subprocess
 import tarfile
 
-#from conans.client.conan_api import Conan
-#from conans.client.command import Command
-
 def platform_path(value):
     value = value.rstrip('/')
     if not os.path.isdir(value):
@@ -47,9 +44,8 @@ def main():
 
     conanfile = f"./conanfile_{platform}.py"
     reference = f"{args.username}/{args.channel}"
-    print(f"Running conan create {conanfile} {reference}")
-    subprocess.call(["conan", "create", conanfile, reference])
-    #Command(Conan()).create(conanfile, reference)
+    print(f"Running conan export-pkg -f {conanfile} {reference}")
+    subprocess.call(["conan", "export-pkg", "-f", conanfile, reference])
 
 
 if __name__ == '__main__':

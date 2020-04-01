@@ -2,14 +2,15 @@
 os_build=Linux
 arch_build=x86_64
 os=Linux
-arch=hi3520dv300
+arch=hi3521av100
 compiler=gcc
 compiler.version=4.8
 
 [build_requires]
-toolchain-hi3520dv300/0.1@trassir/testing
+toolchain-hi3521av100/0.1@trassir/testing
 
 [env]
   CFLAGS="-mcpu=cortex-a7 -mfloat-abi=softfp -mfpu=neon-vfpv4 -mno-unaligned-access -fno-aggressive-loop-optimizations"
 CXXFLAGS="-mcpu=cortex-a7 -mfloat-abi=softfp -mfpu=neon-vfpv4 -mno-unaligned-access -fno-aggressive-loop-optimizations"
  LDFLAGS="-mcpu=cortex-a7 -mfloat-abi=softfp -mfpu=neon-vfpv4 -mno-unaligned-access -fno-aggressive-loop-optimizations"
+#should be copied from hi3520dv300
