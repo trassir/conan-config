@@ -72,5 +72,8 @@ RUN mkdir -p /home/conan/.conan/profiles \
     && printf 'eval "$(pyenv init -)"\n' >> ~/.bashrc \
     && printf 'eval "$(pyenv virtualenv-init -)"\n' >> ~/.bashrc
 
-# TODO: conan config install
-COPY config/profiles/hi3520dv300 /home/conan/.conan/profiles/hi3520dv300
+COPY config/ /home/conan/conan-config-from-repo
+RUN conan config install ~/conan-config-from-repo \
+    && conan remote disable bintray-trassir-cached \
+    && conan remote disable artifactory \
+    && conan remote enable bintray-trassir
