@@ -5,7 +5,7 @@ on:
     branches:
       - docker  # todo: master
     paths:
-      - 'toolchain/Dockerfile'
+      - 'toolchains/Dockerfile'
       - '.github/workflows/build-docker.yml'
 
 jobs:
