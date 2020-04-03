@@ -3,7 +3,9 @@
 FROM ubuntu:eoan
 
 ENV PYENV_ROOT=/opt/pyenv \
-    PATH=/opt/pyenv/shims:${PATH}
+    PATH=/opt/pyenv/shims:${PATH} \
+    CC=gcc-9 \
+    CXX=g++-9
 
 RUN dpkg --add-architecture i386
 
