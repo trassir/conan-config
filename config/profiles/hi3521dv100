@@ -2,7 +2,7 @@
 os_build=Linux
 arch_build=x86_64
 os=Linux
-arch=hi3521dv100g
+arch=hi3521dv100
 compiler=gcc
 compiler.version=4.9
 
