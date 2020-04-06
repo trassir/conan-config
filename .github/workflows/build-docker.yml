@@ -6,6 +6,7 @@ on:
       - docker  # todo: master
     paths:
       - 'toolchains/Dockerfile'
+      - 'config/'
       - '.github/workflows/build-docker.yml'
 
 jobs:
