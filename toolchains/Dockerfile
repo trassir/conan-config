@@ -74,5 +74,4 @@ RUN mkdir -p /home/conan/.conan/profiles \
 
 COPY config/ /home/conan/conan-config-from-repo
 RUN conan config install ~/conan-config-from-repo \
-    && conan remote disable artifactory-cache-bintray-trassir \
-    && conan remote disable artifactory
+    && conan remote disable bintray-trassir
