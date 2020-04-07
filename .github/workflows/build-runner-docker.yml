@@ -1,0 +1,25 @@
+name: Build GHA runner Docker image
+
+on:
+  push:
+    branches:
+      - docker  # todo: master
+    paths:
+      - 'runner/Dockerfile'
+      - '.github/workflows/build-runner-docker.yml'
+
+jobs:
+  build-runner-docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Docker login
+        run: |
+          docker login -p ${{secrets.DOCKER_PASSWORD}} -u ${{secrets.DOCKER_USERNAME}}
+      - name: Build docker image
+        run: |
+          docker build . -f runner/Dockerfile -t "trassiross/gha-runner"
+      - name: Upload docker image
+        run: |
+          docker push "trassiross/gha-runner"

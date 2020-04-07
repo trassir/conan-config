@@ -1,4 +1,4 @@
-name: Build ARM Docker images
+name: Build ARM Docker image
 
 on:
   push:
@@ -7,10 +7,10 @@ on:
     paths:
       - 'toolchains/Dockerfile'
       - 'config/*'
-      - '.github/workflows/build-docker.yml'
+      - '.github/workflows/build-toolchain-docker.yml'
 
 jobs:
-  build-docker:
+  build-toolchain-docker:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -20,7 +20,7 @@ jobs:
           docker login -p ${{secrets.DOCKER_PASSWORD}} -u ${{secrets.DOCKER_USERNAME}}
       - name: Build docker image
         run: |
-          docker build . -f toolchains/Dockerfile -t "trassiross/conan-arm" --build-arg "profile_name="
+          docker build . -f toolchains/Dockerfile -t "trassiross/conan-arm"
       - name: Upload docker image
         run: |
           docker push "trassiross/conan-arm"
