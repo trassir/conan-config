@@ -1,7 +1,5 @@
 FROM ubuntu:18.04
 RUN mkdir /actions-runner
-#ENV AGENT_TOOLSDIRECTORY=/opt/hostedtoolcache
-#ENV AGENT_TOOLSDIRECTORY=/actions-runner/tool_cache
 WORKDIR /actions-runner
 RUN apt-get -q update \
     && apt-get install -qy \
@@ -22,10 +20,7 @@ RUN apt-get install -qy \
         stable" \
     && apt-get -q update \
     && apt-get install -qy \
-        docker-ce \
-        docker-ce-cli \
-        containerd.io \
-    && service docker start
+        docker-ce-cli
 RUN apt-get install -qy git
 
 RUN useradd -ms /bin/bash runner \
@@ -33,6 +28,11 @@ RUN useradd -ms /bin/bash runner \
     && adduser runner sudo \
     && echo "runner ALL= NOPASSWD: ALL" >> /etc/sudoers
 
+#ENV AGENT_TOOLSDIRECTORY=/actions-runner/tool_cache
+RUN echo "export AGENT_TOOLSDIRECTORY=/opt/hostedtoolcache" >> /home/runner/.bashrc
+
+# CMD npm install @actions/toolcache-python-ubuntu-1804-x64@3.8.21582900205
+
 # USER runner
 # CMD cd tool_cache \
-#     && sudo npm install @actions/toolcache-python-ubuntu-1804-x64@3.8.21582900205
+#     && sudo

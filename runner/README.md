@@ -16,14 +16,14 @@ user@node $ docker build . -t actions-runner
 //npm.pkg.github.com/:_authToken=<your token from github>
 registry=https://npm.pkg.github.com/actions
 ```
-5. `cd` to unpacked directory and enter into built image (note the `--privileged` flag):
+5. `cd` to unpacked directory and enter into built image:
 ```
-user@node $ docker run --privileged --rm -it -v `pwd`:/actions-runner actions-runner bash
+user@node $ docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v `pwd`:/actions-runner actions-runner bash
 ```
-6. Activate `docker` service. [CPT](https://github.com/conan-io/conan-package-tools) builds require Docker, and we are already inside one:
+Note the mounting of `docker.sock`. You could genuinely install `docker-ce` inside a Ubuntu image and run `service docker start`, but it may cause mighty lags (up to 30s) on any `docker run` command. It is easier and faster to install just `docker-ce-cli`, forward the socket file, and send commands from inside a running container to the daemon on your host machine.
+6. Check that Docker commands are working inside your container. [CPT](https://github.com/conan-io/conan-package-tools) builds require Docker, and we are already inside one:
 ```
-root@docker $ service docker restart
-root@docker $ docker ps # check that it works
+root@docker $ docker ps
 ```
 7. Install Python 3 toolchain for `setup-python` action, since it itself only switches between installations present locally:
 ```
