@@ -21,6 +21,8 @@ registry=https://npm.pkg.github.com/actions
 user@node $ docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v `pwd`:/actions-runner actions-runner bash
 ```
 Note the mounting of `docker.sock`. You could genuinely install `docker-ce` inside a Ubuntu image and run `service docker start`, but it may cause mighty lags (up to 30s) on any `docker run` command. It is easier and faster to install just `docker-ce-cli`, forward the socket file, and send commands from inside a running container to the daemon on your host machine.
+
+But because of this, **Docker will resolve all paths (especially mounting points) relative to Host while being run from Container**. This means that when you `docker run -v /actions-runner/foo:/somedir`, even if you run it from container, Docker will look for `/actions-runner` path in the host system. So you **have to startup runner from the same directory that was specified in the Dockerfile as WORKDIR**.
 6. Check that Docker commands are working inside your container. [CPT](https://github.com/conan-io/conan-package-tools) builds require Docker, and we are already inside one:
 ```
 root@docker $ docker ps
