@@ -3,7 +3,12 @@ name: Build ARM Docker image
 on:
   push:
     branches:
-      - docker  # todo: master
+      - master
+    paths:
+      - 'toolchains/Dockerfile'
+      - 'config/**'
+      - '.github/workflows/build-toolchain-docker.yml'
+  pull_request:
     paths:
       - 'toolchains/Dockerfile'
       - 'config/**'

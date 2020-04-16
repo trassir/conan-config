@@ -3,7 +3,11 @@ name: Build GHA runner Docker image
 on:
   push:
     branches:
-      - docker  # todo: master
+      - master
+    paths:
+      - 'runner/Dockerfile'
+      - '.github/workflows/build-runner-docker.yml'
+  pull_request:
     paths:
       - 'runner/Dockerfile'
       - '.github/workflows/build-runner-docker.yml'
