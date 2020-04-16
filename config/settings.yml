@@ -1,3 +1,4 @@
+# Based on Conan 1.24.0
 
 # Only for cross building, 'os_build/arch_build' is the system that runs Conan
 os_build: [Windows, WindowsStore, Linux, Macos, FreeBSD, SunOS, AIX]
