@@ -1,13 +1,13 @@
 # inspired by https://github.com/conan-io/conan-docker-tools/blob/master/gcc_9/Dockerfile
 
-FROM ubuntu:eoan
+FROM ubuntu:12.04
 
 ENV PYENV_ROOT=/opt/pyenv \
     PATH=/opt/pyenv/shims:${PATH} \
-    CC=gcc-9 \
-    CXX=g++-9
+    CC=gcc-8 \
+    CXX=g++-8
 
-RUN dpkg --add-architecture i386
+# RUN dpkg --add-architecture i386
 
 # various system tools
 RUN apt-get -qq update \
@@ -19,9 +19,14 @@ RUN apt-get -qq update \
         ca-certificates \
         zlib1g:i386 # for running the arm-gcc/arm-as itself
 
+# toolchain repo for g++8
+RUN apt-get -qq install -y python-software-properties \
+    && add-apt-repository -y ppa:ubuntu-toolchain-r/test \
+    && apt-get -qq update
+
 # python build requirements
 RUN apt-get -qq install -y --no-install-recommends \
-    g++-9-multilib \
+    g++-8-multilib \
     make \
     zlib1g-dev \
     libbz2-dev \
@@ -53,16 +58,14 @@ RUN wget --no-check-certificate --quiet -O /tmp/pyenv-installer https://github.c
     && /tmp/pyenv-installer \
     && rm /tmp/pyenv-installer \
     && update-alternatives --install /usr/bin/pyenv pyenv /opt/pyenv/bin/pyenv 100 \
-    && PYTHON_CONFIGURE_OPTS="--enable-shared" pyenv install 3.7.5 \
-    && pyenv global 3.7.5 \
+    && PYTHON_CONFIGURE_OPTS="--enable-shared" pyenv install 3.6.8 \
+    && pyenv global 3.6.8 \
     && pip install -q --upgrade --no-cache-dir pip \
     && pip install -q --no-cache-dir conan conan-package-tools \
     && chown -R conan:1001 /opt/pyenv \
     # remove all __pycache__ directories created by pyenv
     && find /opt/pyenv -iname __pycache__ -print0 | xargs -0 rm -rf \
-    && update-alternatives --install /usr/bin/python python /opt/pyenv/shims/python 100 \
     && update-alternatives --install /usr/bin/python3 python3 /opt/pyenv/shims/python3 100 \
-    && update-alternatives --install /usr/bin/pip pip /opt/pyenv/shims/pip 100 \
     && update-alternatives --install /usr/bin/pip3 pip3 /opt/pyenv/shims/pip3 100
 
 USER conan
