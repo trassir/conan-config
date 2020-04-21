@@ -66,6 +66,7 @@ RUN wget --no-check-certificate --quiet -O /tmp/pyenv-installer https://github.c
     # remove all __pycache__ directories created by pyenv
     && find /opt/pyenv -iname __pycache__ -print0 | xargs -0 rm -rf \
     && update-alternatives --install /usr/bin/python3 python3 /opt/pyenv/shims/python3 100 \
+    && update-alternatives --install /usr/bin/pip pip /opt/pyenv/shims/pip 100 \
     && update-alternatives --install /usr/bin/pip3 pip3 /opt/pyenv/shims/pip3 100
 
 USER conan
