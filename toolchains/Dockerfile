@@ -34,7 +34,8 @@ RUN apt-get -qq install -y --no-install-recommends \
     ninja-build \
     libssl-dev \
     libffi-dev \
-    libsqlite3-dev
+    libsqlite3-dev \
+    liblzma-dev
 
 RUN groupadd 1001 -g 1001 \
     && useradd -ms /bin/bash conan -g 1001 \
