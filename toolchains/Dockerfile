@@ -59,10 +59,10 @@ RUN wget --no-check-certificate --quiet -O /tmp/pyenv-installer https://github.c
     && /tmp/pyenv-installer \
     && rm /tmp/pyenv-installer \
     && update-alternatives --install /usr/bin/pyenv pyenv /opt/pyenv/bin/pyenv 100 \
-    && PYTHON_CONFIGURE_OPTS="--enable-shared" pyenv install 3.4.4 \
-    && pyenv global 3.4.4 \
+    && PYTHON_CONFIGURE_OPTS="--enable-shared" pyenv install 3.6.8 \
+    && pyenv global 3.6.8 \
     && pip install -q --upgrade --no-cache-dir pip \
-    && pip install -q --no-cache-dir conan conan-package-tools \
+    && pip install -q --no-cache-dir conan conan-package-tools mako \
     && chown -R conan:1001 /opt/pyenv \
     # remove all __pycache__ directories created by pyenv
     && find /opt/pyenv -iname __pycache__ -print0 | xargs -0 rm -rf \
