@@ -17,24 +17,45 @@ RUN apt-get -qq update \
         curl \
         wget \
         ca-certificates \
+        apt-utils \
         zlib1g:i386 # for running the arm-gcc/arm-as itself
 
 # toolchain repo for g++8
-RUN apt-get -qq install -y python-software-properties \
+RUN apt-get -qq install -y --no-install-recommends \
+        python-software-properties \
     && add-apt-repository -y ppa:ubuntu-toolchain-r/test \
-    && apt-get -qq update
+    && apt-get -qq update \
+    && apt-get -qq install -y --no-install-recommends \
+        g++-8-multilib \
+        make \
+        ninja-build
 
 # python build requirements
 RUN apt-get -qq install -y --no-install-recommends \
-    g++-8-multilib \
-    make \
     zlib1g-dev \
     libbz2-dev \
     libreadline-dev \
-    ninja-build \
     libssl-dev \
     libffi-dev \
+    liblzma-dev \
     libsqlite3-dev
+
+# various common build dependencies for popular libraries
+RUN apt-get -qq install -y --no-install-recommends \
+    binutils \
+    libc6-dev \
+    libc6-dev-i386 \
+    linux-libc-dev:i386 \
+    libgmp-dev \
+    libmpfr-dev \
+    libmpc-dev \
+    nasm \
+    dh-autoreconf \
+    pkg-config \
+    xz-utils \
+    libncurses5-dev \
+    libncursesw5-dev \
+    autoconf-archive
 
 RUN groupadd 1001 -g 1001 \
     && useradd -ms /bin/bash conan -g 1001 \
@@ -61,13 +82,14 @@ RUN wget --no-check-certificate --quiet -O /tmp/pyenv-installer https://github.c
     && PYTHON_CONFIGURE_OPTS="--enable-shared" pyenv install 3.6.8 \
     && pyenv global 3.6.8 \
     && pip install -q --upgrade --no-cache-dir pip \
-    && pip install -q --no-cache-dir conan conan-package-tools \
+    && pip install -q --no-cache-dir conan conan-package-tools mako \
     && chown -R conan:1001 /opt/pyenv \
     # remove all __pycache__ directories created by pyenv
     && find /opt/pyenv -iname __pycache__ -print0 | xargs -0 rm -rf \
     && update-alternatives --install /usr/bin/python3 python3 /opt/pyenv/shims/python3 100 \
     && update-alternatives --install /usr/bin/pip pip /opt/pyenv/shims/pip 100 \
     && update-alternatives --install /usr/bin/pip3 pip3 /opt/pyenv/shims/pip3 100
+
 
 USER conan
 WORKDIR /home/conan
@@ -76,6 +98,6 @@ RUN mkdir -p /home/conan/.conan/profiles \
     && printf 'eval "$(pyenv init -)"\n' >> ~/.bashrc \
     && printf 'eval "$(pyenv virtualenv-init -)"\n' >> ~/.bashrc
 
-COPY config/ /home/conan/conan-config-from-repo
-RUN conan config install ~/conan-config-from-repo \
-    && conan remote disable bintray-trassir
+# COPY config/ /home/conan/conan-config-from-repo
+# RUN conan config install ~/conan-config-from-repo \
+#     && conan remote disable bintray-trassir
