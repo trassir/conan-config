@@ -73,7 +73,7 @@ RUN wget --no-check-certificate --quiet https://cmake.org/files/v3.16/cmake-3.16
     && rm cmake-3.16.4-Linux-x86_64.tar.gz
 
 
-
+# build python
 RUN wget --no-check-certificate --quiet -O /tmp/pyenv-installer https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer \
     && chmod +x /tmp/pyenv-installer \
     && /tmp/pyenv-installer \
@@ -89,6 +89,20 @@ RUN wget --no-check-certificate --quiet -O /tmp/pyenv-installer https://github.c
     && update-alternatives --install /usr/bin/python3 python3 /opt/pyenv/shims/python3 100 \
     && update-alternatives --install /usr/bin/pip pip /opt/pyenv/shims/pip 100 \
     && update-alternatives --install /usr/bin/pip3 pip3 /opt/pyenv/shims/pip3 100
+
+
+# build newer binutils because of ld bugs
+RUN cd /tmp \
+    && wget --no-check-certificate --quiet https://mirror.tochlab.net/pub/gnu/binutils/binutils-2.30.tar.gz \
+    && tar xf binutils-2.30.tar.gz \
+    && mkdir binutils-2.30/build \
+    && cd binutils-2.30/build \
+    && ../configure --prefix /binutils-2.30 \
+    && make -sj10 \
+    && make install \
+    && update-alternatives --install /usr/local/bin/ld ld /usr/bin/ld 10 \
+    && update-alternatives --install /usr/local/bin/ld ld /binutils-2.30/bin/ld 100 \
+    && rm -r /tmp/binutils-2.30 /tmp/binutils-2.30.tar.gz
 
 
 USER conan
