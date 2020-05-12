@@ -5,7 +5,7 @@ os=Linux
 arch=hi3536dv100
 compiler=gcc
 compiler.version=6
-compiler.libcxx=libstdc++
+compiler.libcxx=libstdc++11
 
 [build_requires]
 toolchain-hi3536dv100/0.1@trassir/testing

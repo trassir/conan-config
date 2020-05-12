@@ -1,0 +1,83 @@
+# inspired by https://github.com/conan-io/conan-docker-tools/blob/master/gcc_9/Dockerfile
+
+FROM ubuntu:12.04
+
+ENV PYENV_ROOT=/opt/pyenv \
+    PATH=/opt/pyenv/shims:${PATH}
+
+# RUN dpkg --add-architecture i386
+RUN apt-get -qq update \
+&& printf "\n\n== APT-GET INSTALL ==\n\n" \
+# various system tools
+    && apt-get -qy install --no-install-recommends \
+        apt-utils \
+        sudo \
+        git \
+        curl \
+        wget \
+        ca-certificates \
+        make \
+        ninja-build \
+# python build requirements
+        g++-multilib \
+        zlib1g-dev \
+        libbz2-dev \
+        libreadline-dev \
+        libssl-dev \
+        libffi-dev \
+        liblzma-dev \
+        libsqlite3-dev \
+# various common build dependencies for popular libraries
+        libgmp-dev \
+        libmpfr-dev \
+        libmpc-dev \
+        nasm \
+        dh-autoreconf \
+        pkg-config \
+        xz-utils \
+        libncurses5-dev \
+        libncursesw5-dev \
+        autoconf-archive \
+&& printf "\n\n== ADD CONAN USER ==\n\n" \
+    && groupadd 1001 -g 1001 \
+    && useradd -ms /bin/bash conan -g 1001 \
+    && printf "conan:conan" | chpasswd \
+    && adduser conan sudo \
+    && printf "conan ALL= NOPASSWD: ALL\\n" >> /etc/sudoers \
+&& printf "\n\n== INSTALL CMAKE ==\n\n" \
+    && wget --no-check-certificate --quiet https://cmake.org/files/v3.16/cmake-3.16.4-Linux-x86_64.tar.gz \
+    && tar -xzf cmake-3.16.4-Linux-x86_64.tar.gz \
+        --exclude=bin/cmake-gui \
+        --exclude=doc/cmake \
+        --exclude=share/cmake-3.12/Help \
+    && cp -fR cmake-3.16.4-Linux-x86_64/* /usr \
+    && rm -rf cmake-3.16.4-Linux-x86_64 \
+    && rm cmake-3.16.4-Linux-x86_64.tar.gz \
+&& printf "\n\n== BUILD PYTHON ==\n\n" \
+    && wget --no-check-certificate --quiet -O /tmp/pyenv-installer https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer \
+    && chmod +x /tmp/pyenv-installer \
+    && /tmp/pyenv-installer \
+    && rm /tmp/pyenv-installer \
+    && update-alternatives --install /usr/bin/pyenv pyenv /opt/pyenv/bin/pyenv 100 \
+    && PYTHON_CONFIGURE_OPTS="--enable-shared" pyenv install 3.6.8 \
+    && pyenv global 3.6.8 \
+    && pip install -q --upgrade --no-cache-dir pip \
+    && pip install -q --no-cache-dir conan conan-package-tools mako \
+    && chown -R conan:1001 /opt/pyenv \
+    # remove all __pycache__ directories created by pyenv
+    && find /opt/pyenv -iname __pycache__ -print0 | xargs -0 rm -rf \
+    && update-alternatives --install /usr/bin/python3 python3 /opt/pyenv/shims/python3 100 \
+    && update-alternatives --install /usr/bin/pip pip /opt/pyenv/shims/pip 100 \
+    && update-alternatives --install /usr/bin/pip3 pip3 /opt/pyenv/shims/pip3 100 \
+&& printf "\n\n== REMOVE DEFAULT GCC ==\n\n" \
+    && apt-get -qy remove g++-multilib \
+    && apt-get -qy autoremove \
+&& printf "\n\n== ROOT DONE ==\n\n"
+
+
+USER conan
+WORKDIR /home/conan
+
+RUN mkdir -p /home/conan/.conan/profiles \
+    && printf 'eval "$(pyenv init -)"\n' >> ~/.bashrc \
+    && printf 'eval "$(pyenv virtualenv-init -)"\n' >> ~/.bashrc

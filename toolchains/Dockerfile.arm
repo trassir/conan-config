@@ -1,0 +1,11 @@
+# inspired by https://github.com/conan-io/conan-docker-tools/blob/master/gcc_9/Dockerfile
+
+FROM trassiross/conan-base
+
+RUN sudo apt-get -qy install --no-install-recommends \
+        zlib1g:i386
+
+COPY config/ /home/conan/conan-config-from-repo
+RUN conan config install ~/conan-config-from-repo \
+# supposed to be used on a local GHA Runner instance that should use Artifactory
+    && conan remote disable bintray-trassir

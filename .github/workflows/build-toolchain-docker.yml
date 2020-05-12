@@ -1,4 +1,4 @@
-name: Build ARM Docker image
+name: Build Docker images
 
 on:
   push:
@@ -24,9 +24,18 @@ jobs:
       - name: Docker login
         run: |
           docker login -p ${{secrets.DOCKER_PASSWORD}} -u ${{secrets.DOCKER_USERNAME}}
-      - name: Build docker image
+      - name: Build base image
         run: |
-          docker build . -f toolchains/Dockerfile -t "trassiross/conan-gcc8"
-      - name: Upload docker image
+          docker build . -f toolchains/Dockerfile.base -t "trassiross/conan-base"
+      - name: Build GCC8 image
         run: |
+          docker build . -f toolchains/Dockerfile.base -t "trassiross/conan-gcc8"
+      - name: Build ARM image
+        run: |
+          docker build . -f toolchains/Dockerfile.base -t "trassiross/conan-arm"
+      - name: Upload docker images
+        if: ${{ github.event_name == 'push' }}
+        run: |
+          docker push "trassiross/conan-base"
           docker push "trassiross/conan-gcc8"
+          docker push "trassiross/conan-arm"

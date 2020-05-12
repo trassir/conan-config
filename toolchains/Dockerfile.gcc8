@@ -1,0 +1,43 @@
+# inspired by https://github.com/conan-io/conan-docker-tools/blob/master/gcc_9/Dockerfile
+
+FROM trassiross/conan-base
+
+ENV CC=gcc-8 \
+    CXX=g++-8
+USER root
+
+# toolchain repo for g++8
+RUN apt-get -qq install -y --no-install-recommends \
+        python-software-properties \
+    && add-apt-repository -y ppa:ubuntu-toolchain-r/test \
+    && apt-get -qq update \
+    && apt-get -qq install -y --no-install-recommends \
+        g++-8-multilib \
+        ninja-build \
+# various common build dependencies for popular libraries
+        binutils \
+        libc6-dev \
+        libc6-dev-i386 \
+        linux-libc-dev:i386 \
+# build newer binutils because of ld bugs
+    && cd /tmp \
+    && wget --no-check-certificate --quiet https://mirror.tochlab.net/pub/gnu/binutils/binutils-2.30.tar.gz \
+    && tar xf binutils-2.30.tar.gz \
+    && mkdir binutils-2.30/build \
+    && cd binutils-2.30/build \
+    && ../configure --prefix /binutils-2.30 \
+    && make -sj10 \
+    && make install \
+    && update-alternatives --install /usr/local/bin/ld ld /usr/bin/ld 10 \
+    && update-alternatives --install /usr/local/bin/ld ld /binutils-2.30/bin/ld 100 \
+    && rm -r /tmp/binutils-2.30 /tmp/binutils-2.30.tar.gz
+
+USER conan
+WORKDIR /home/conan
+
+COPY config/ /home/conan/conan-config-from-repo
+RUN conan config install ~/conan-config-from-repo \
+# supposed to be used in cloud that has no access to local Artifactory
+    && conan remote disable artifactory \
+    && conan remote disable artifactory-cache-bintray-trassir \
+    && mv ~/.conan/profiles/gcc8 ~/.conan/profiles/default
