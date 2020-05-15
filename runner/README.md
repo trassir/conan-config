@@ -38,4 +38,4 @@ root@docker su runner
 runner@docker $ export AGENT_TOOLSDIRECTORY=/opt/hostedtoolcache/
 runner@docker $ ./run.sh
 ```
-You now should a working GHA Runner inside a container that will be able to process workflows running with `os: self-hosted`.
+You now should have a working GHA Runner inside a container that will be able to process workflows running with `os: self-hosted`.
