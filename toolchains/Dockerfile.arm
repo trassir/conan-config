@@ -3,7 +3,9 @@
 FROM trassiross/conan-base
 
 RUN sudo apt-get -qy install --no-install-recommends \
-        zlib1g:i386
+# needed to run 32bit toolchain binaries from sdkARM
+        zlib1g:i386 \
+        libstdc++6:i386
 
 COPY config/ /home/conan/conan-config-from-repo
 RUN conan config install ~/conan-config-from-repo \

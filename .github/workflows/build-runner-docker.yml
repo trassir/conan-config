@@ -25,5 +25,6 @@ jobs:
         run: |
           docker build . -f runner/Dockerfile -t "trassiross/gha-runner"
       - name: Upload docker image
+        if: ${{ github.event_name == 'push' }}
         run: |
           docker push "trassiross/gha-runner"

@@ -70,7 +70,11 @@ RUN apt-get -qq update \
     && update-alternatives --install /usr/bin/pip pip /opt/pyenv/shims/pip 100 \
     && update-alternatives --install /usr/bin/pip3 pip3 /opt/pyenv/shims/pip3 100 \
 && printf "\n\n== REMOVE DEFAULT GCC ==\n\n" \
-    && apt-get -qy remove g++-multilib \
+    && apt-get -qy remove \
+        # these provide /usr/bin/g++ binaries that should be replaced with actual compiler via update-alternatives
+        gcc g++ \
+        # we do not need 4.6 here, but removing gcc-4.6 will also remove libtool and other tools needed for building libraries
+        g++-4.6 \
     && apt-get -qy autoremove \
 && printf "\n\n== ROOT DONE ==\n\n"
 

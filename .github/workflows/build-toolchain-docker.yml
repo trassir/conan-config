@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - gcc8
     paths:
       - 'toolchains/Dockerfile'
       - 'config/**'
@@ -29,10 +28,10 @@ jobs:
           docker build . -f toolchains/Dockerfile.base -t "trassiross/conan-base"
       - name: Build GCC8 image
         run: |
-          docker build . -f toolchains/Dockerfile.base -t "trassiross/conan-gcc8"
+          docker build . -f toolchains/Dockerfile.gcc8 -t "trassiross/conan-gcc8"
       - name: Build ARM image
         run: |
-          docker build . -f toolchains/Dockerfile.base -t "trassiross/conan-arm"
+          docker build . -f toolchains/Dockerfile.arm -t "trassiross/conan-arm"
       - name: Upload docker images
         if: ${{ github.event_name == 'push' }}
         run: |
