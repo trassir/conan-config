@@ -1,5 +1,3 @@
 artifactory http://jenkins.dssl.local:8888/artifactory/api/conan/local-conan true
 artifactory-cache-bintray-trassir http://jenkins.dssl.local:8888/artifactory/api/conan/bintray-trassir true
 bintray-trassir https://api.bintray.com/conan/trassir/conan-public true
-bintray-center https://api.bintray.com/conan/conan/conan-center true
-bintray-bincrafters https://api.bintray.com/conan/bincrafters/public-conan true
