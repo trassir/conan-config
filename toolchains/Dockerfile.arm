@@ -9,5 +9,5 @@ RUN sudo apt-get -qy install --no-install-recommends \
 
 COPY config/ /home/conan/conan-config-from-repo
 RUN conan config install ~/conan-config-from-repo \
-# supposed to be used on a local GHA Runner instance that should use Artifactory
-    && conan remote disable bintray-trassir
+# CPT will try to add and use `upload_repo` for this url and fail if the name is not found
+    && conan remote rename bintray-trassir upload_repo
