@@ -8,6 +8,4 @@ RUN sudo apt-get -qy install --no-install-recommends \
         libstdc++6:i386
 
 COPY config/ /home/conan/conan-config-from-repo
-RUN conan config install ~/conan-config-from-repo \
-# CPT will try to add and use `upload_repo` for this url and fail if the name is not found
-    && conan remote rename bintray-trassir upload_repo
+RUN conan config install ~/conan-config-from-repo
