@@ -5,12 +5,12 @@ on:
     branches:
       - master
     paths:
-      - 'toolchains/Dockerfile'
+      - 'toolchains/Dockerfile*'
       - 'config/**'
       - '.github/workflows/build-toolchain-docker.yml'
   pull_request:
     paths:
-      - 'toolchains/Dockerfile'
+      - 'toolchains/Dockerfile*'
       - 'config/**'
       - '.github/workflows/build-toolchain-docker.yml'
 
