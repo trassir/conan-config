@@ -11,7 +11,7 @@ See [Conan-Center Index fork](https://github.com/trassir/conan-center-index) for
 
 To install configuration:
 ```
-conan config install --args https://github.com/trassir/conan-config.git
+conan config install https://github.com/trassir/conan-config.git
 ```
 
 To build and use Docker images, see corresponding READMEs in subdirectories.
