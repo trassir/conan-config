@@ -8,4 +8,6 @@ RUN sudo apt-get -qy install --no-install-recommends \
         libstdc++6:i386
 
 COPY config/ /home/conan/conan-config-from-repo
-RUN conan config install ~/conan-config-from-repo
+RUN conan config install ~/conan-config-from-repo \
+    && conan remote add artifactory http://jenkins.dssl.local:8888/artifactory/api/conan/local-conan \
+    && conan remote add artifactory-cache-bintray-trassir http://jenkins.dssl.local:8888/artifactory/api/conan/bintray-trassir
