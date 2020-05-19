@@ -45,8 +45,6 @@ COPY config/ /home/conan/conan-config-from-repo
 RUN conan config install ~/conan-config-from-repo \
 # supposed to be used in cloud that has no access to local Artifactory
     && conan remote disable artifactory \
-    && conan remote disable artifactory-cache-bintray-trassir \
-# CPT will try to add and use `upload_repo` for this url and fail if the name is not found
-    && conan remote rename bintray-trassir upload_repo
+    && conan remote disable artifactory-cache-bintray-trassir
 # TODO: causes some builds to fail, see https://success.trassir.com/T8348
 #    && mv ~/.conan/profiles/gcc8 ~/.conan/profiles/default
