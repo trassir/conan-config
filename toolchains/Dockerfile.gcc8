@@ -42,9 +42,6 @@ USER conan
 WORKDIR /home/conan
 
 COPY config/ /home/conan/conan-config-from-repo
-RUN conan config install ~/conan-config-from-repo \
-# supposed to be used in cloud that has no access to local Artifactory
-    && conan remote disable artifactory \
-    && conan remote disable artifactory-cache-bintray-trassir
+RUN conan config install ~/conan-config-from-repo
 # TODO: causes some builds to fail, see https://success.trassir.com/T8348
 #    && mv ~/.conan/profiles/gcc8 ~/.conan/profiles/default
