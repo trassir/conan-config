@@ -1,0 +1,13 @@
+# inspired by https://github.com/conan-io/conan-docker-tools/blob/master/gcc_9/Dockerfile
+
+FROM trassiross/conan-base
+
+RUN sudo apt-get -qy install --no-install-recommends \
+# needed to run 32bit toolchain binaries from sdkARM
+        zlib1g:i386 \
+        libstdc++6:i386
+
+COPY config/ /home/conan/conan-config-from-repo
+RUN conan config install ~/conan-config-from-repo \
+# CPT will try to add and use `upload_repo` for this url and fail if the name is not found
+    && conan remote rename bintray-trassir upload_repo

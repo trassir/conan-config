@@ -1,0 +1,40 @@
+name: Build Docker images
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'toolchains/Dockerfile'
+      - 'config/**'
+      - '.github/workflows/build-toolchain-docker.yml'
+  pull_request:
+    paths:
+      - 'toolchains/Dockerfile'
+      - 'config/**'
+      - '.github/workflows/build-toolchain-docker.yml'
+
+jobs:
+  build-toolchain-docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Docker login
+        run: |
+          docker login -p ${{secrets.DOCKER_PASSWORD}} -u ${{secrets.DOCKER_USERNAME}}
+      - name: Build base image
+        run: |
+          docker build . -f toolchains/Dockerfile.base -t "trassiross/conan-base"
+      - name: Build GCC8 image
+        run: |
+          docker build . -f toolchains/Dockerfile.gcc8 -t "trassiross/conan-gcc8"
+      - name: Build ARM image
+        run: |
+          docker build . -f toolchains/Dockerfile.arm -t "trassiross/conan-arm"
+      - name: Upload docker images
+        if: ${{ github.event_name == 'push' }}
+        run: |
+          docker push "trassiross/conan-base"
+          docker push "trassiross/conan-gcc8"
+          docker push "trassiross/conan-arm"

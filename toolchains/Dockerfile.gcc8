@@ -1,0 +1,52 @@
+# inspired by https://github.com/conan-io/conan-docker-tools/blob/master/gcc_9/Dockerfile
+
+FROM trassiross/conan-base
+
+ENV CC=gcc-8 \
+    CXX=g++-8
+USER root
+
+# toolchain repo for g++8
+RUN apt-get -qq update \
+&& printf "\n\n== APT-GET INSTALL ==\n\n" \
+    && apt-get -qqy install --no-install-recommends \
+        python-software-properties \
+    && add-apt-repository -y ppa:ubuntu-toolchain-r/test \
+    && apt-get -qq update \
+    && apt-get -qy install --no-install-recommends \
+        g++-8-multilib \
+# these are needed to build x86 libraries
+        libc6-dev \
+        libc6-dev-i386 \
+        linux-libc-dev:i386
+RUN printf "\n\n== UPDATE ALTERNATIVES FOR GCC ==\n\n" \
+    && update-alternatives \
+        --install /usr/bin/gcc gcc /usr/bin/gcc-8 100 \
+        --slave /usr/bin/g++ g++ /usr/bin/g++-8
+# using older ld causes linking bugs, so we build a newer one
+RUN printf "\n\n== BUILD NEWER BINUTILS ==\n\n" \
+    && cd /tmp \
+    && wget --no-check-certificate --quiet https://mirror.tochlab.net/pub/gnu/binutils/binutils-2.30.tar.gz \
+    && tar xf binutils-2.30.tar.gz \
+    && mkdir binutils-2.30/build \
+    && cd binutils-2.30/build \
+    && ../configure --prefix /binutils-2.30 \
+    && make -sj10 \
+    && make install \
+    && rm -r /tmp/binutils-2.30 /tmp/binutils-2.30.tar.gz \
+&& printf "\n\n== UPDATE ALTERNATIVES FOR LD ==\n\n" \
+    && update-alternatives --install /usr/local/bin/ld ld /usr/bin/ld 10 \
+    && update-alternatives --install /usr/local/bin/ld ld /binutils-2.30/bin/ld 100
+
+USER conan
+WORKDIR /home/conan
+
+COPY config/ /home/conan/conan-config-from-repo
+RUN conan config install ~/conan-config-from-repo \
+# supposed to be used in cloud that has no access to local Artifactory
+    && conan remote disable artifactory \
+    && conan remote disable artifactory-cache-bintray-trassir \
+# CPT will try to add and use `upload_repo` for this url and fail if the name is not found
+    && conan remote rename bintray-trassir upload_repo
+# TODO: causes some builds to fail, see https://success.trassir.com/T8348
+#    && mv ~/.conan/profiles/gcc8 ~/.conan/profiles/default
