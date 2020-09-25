@@ -1,0 +1,24 @@
+name: Ensure ARM hi35XX arches present in settings.yml
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'config/settings.yml'
+      - '.github/workflows/check-arm-settings.yml'
+  pull_request:
+    paths:
+      - 'config/settings.yml'
+      - '.github/workflows/check-arm-settings.yml'
+
+jobs:
+  check-arm-settings:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Grep settings.yml content
+        run: |
+          grep -P 'arch: \[.*hi35.*' config/settings.yml || \
+          (echo "No hi35XX present in 'arch:' setting; did you just overwrite settings.yml completely?" && false)
