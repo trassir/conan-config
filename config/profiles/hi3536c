@@ -8,7 +8,7 @@ compiler.version=4.9
 compiler.libcxx=libstdc++
 
 [build_requires]
-toolchain-hi3536c/0.1@trassir/testing-strip
+toolchain-hi3536c/0.1@trassir/sdkARM
 
 [env]
   CFLAGS="-mcpu=cortex-a7 -mfloat-abi=softfp -mfpu=vfpv4 -mno-unaligned-access -fno-aggressive-loop-optimizations"
