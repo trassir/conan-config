@@ -1,1 +1,0 @@
-bintray-trassir https://api.bintray.com/conan/trassir/conan-public true
