@@ -1,21 +1,26 @@
 # inspired by https://github.com/conan-io/conan-docker-tools/blob/master/gcc_9/Dockerfile
 
+# !!!!!!!!! ATTENTION !!!!!!!!!
+# don't change ubuntu version; trassir has very old glibc
 FROM ubuntu:12.04
 
 ENV PYENV_ROOT=/opt/pyenv \
     PATH=/opt/pyenv/shims:${PATH}
 
 # RUN dpkg --add-architecture i386
-RUN apt-get -qq update \
+
+# repository injection for end of life ubuntu:12.04
+RUN sed -i.bak -r 's/(archive|security).(ubuntu|canonical).com/old-releases.ubuntu.com/g' /etc/apt/sources.list
+
+RUN apt-get update \
 && printf "\n\n== APT-GET INSTALL ==\n\n" \
-# various system tools
     && apt-get -qy install --no-install-recommends \
         apt-utils \
         sudo \
-        git \
         curl \
         wget \
         ca-certificates \
+        python-software-properties \
         make \
         ninja-build \
 # python build requirements
@@ -38,6 +43,11 @@ RUN apt-get -qq update \
         libncurses5-dev \
         libncursesw5-dev \
         autoconf-archive \
+&& printf "\n\n== APT-GET INSTALL GIT FROM SPEC REPO ==\n\n" \
+# add last git version repo
+    && add-apt-repository ppa:git-core/ppa -y \
+    && apt-get update \
+    && apt-get -qy install git \
 && printf "\n\n== ADD CONAN USER ==\n\n" \
     && groupadd 1001 -g 1001 \
     && useradd -ms /bin/bash conan -g 1001 \
@@ -45,14 +55,15 @@ RUN apt-get -qq update \
     && adduser conan sudo \
     && printf "conan ALL= NOPASSWD: ALL\\n" >> /etc/sudoers \
 && printf "\n\n== INSTALL CMAKE ==\n\n" \
-    && wget --no-check-certificate --quiet https://cmake.org/files/v3.16/cmake-3.16.4-Linux-x86_64.tar.gz \
-    && tar -xzf cmake-3.16.4-Linux-x86_64.tar.gz \
+    && wget --no-check-certificate --quiet https://cmake.org/files/v3.19/cmake-3.19.8-Linux-x86_64.tar.gz \
+    && tar -xzf cmake-3.19.8-Linux-x86_64.tar.gz \
         --exclude=bin/cmake-gui \
         --exclude=doc/cmake \
         --exclude=share/cmake-3.12/Help \
-    && cp -fR cmake-3.16.4-Linux-x86_64/* /usr \
-    && rm -rf cmake-3.16.4-Linux-x86_64 \
-    && rm cmake-3.16.4-Linux-x86_64.tar.gz \
+    && cp -fR cmake-3.19.8-Linux-x86_64/* /usr \
+    && rm -rf cmake-3.19.8-Linux-x86_64 \
+    && rm cmake-3.19.8-Linux-x86_64.tar.gz \
+    && cmake --version \
 && printf "\n\n== BUILD PYTHON ==\n\n" \
     && wget --no-check-certificate --quiet -O /tmp/pyenv-installer https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer \
     && chmod +x /tmp/pyenv-installer \
