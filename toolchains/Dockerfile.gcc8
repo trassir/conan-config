@@ -18,7 +18,26 @@ RUN apt-get -qq update \
 # these are needed to build x86 libraries
         libc6-dev \
         libc6-dev-i386 \
-        linux-libc-dev:i386
+        linux-libc-dev:i386 \
+        # also install system dependencies for conan packages
+        # - for xorg package
+        xorg-dev \
+        libx11-xcb-dev \
+        libxcb-render-util0-dev \
+        libxcb-icccm4-dev \
+        libxcb-image0-dev \
+        libxcb-keysyms1-dev \
+        libxcb-randr0-dev \
+        libxcb-shape0-dev \
+        libxcb-xfixes0-dev \
+        libxcb-xinerama0-dev \
+        libxcb-util0-dev \
+        xkb-data \
+        # - for gtk package
+        libgtk2.0-dev \
+        # - for ffmpeg package
+        libasound2-dev
+
 RUN printf "\n\n== UPDATE ALTERNATIVES FOR GCC ==\n\n" \
     && update-alternatives \
         --install /usr/bin/gcc gcc /usr/bin/gcc-8 100 \
