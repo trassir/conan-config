@@ -35,6 +35,8 @@ RUN apt-get -qq update \
         xkb-data \
         # - for gtk package
         libgtk2.0-dev \
+        # - for sip package
+        python-dev \
         # - for ffmpeg package
         libasound2-dev
 
